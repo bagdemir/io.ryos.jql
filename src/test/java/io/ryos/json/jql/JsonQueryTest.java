@@ -90,4 +90,13 @@ public class JsonQueryTest {
     assertThat("list must not be null.",fooList, notNullValue());
     assertThat("list contains 2 items", fooList.size(), equalTo(2));
   }
+
+  @Test
+  public void testReadListByExpression() {
+    JsonObject jsonUit = Json.createObjectBuilder().add("foo", Json.createArrayBuilder().add("1")
+        .add("2").build()).build();
+    List<String> fooList = JsonQuery.of(jsonUit).query(".foo[]", asList(ofString()));
+    assertThat("list must not be null.",fooList, notNullValue());
+    assertThat("list contains 2 items", fooList.size(), equalTo(2));
+  }
 }
