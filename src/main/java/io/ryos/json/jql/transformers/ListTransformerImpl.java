@@ -20,34 +20,36 @@ package io.ryos.json.jql.transformers;
 
 import io.ryos.json.jql.TypeTransformer;
 import io.ryos.json.jql.exceptions.TransformingNotSupportedException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.json.JsonArray;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
 /**
- * This class does nothing unless you provide some docs.
+ * Transformer implementation for JsonArray to List conversions.
+ * Unused parameterized type Z is required for Type inference.
  *
  * @author Erhan Bagdemir
  */
-public class ListTransformerImpl<T, E extends JsonValue> implements TypeTransformer<List,
-    JsonValue> {
+@SuppressWarnings("unused")
+public class ListTransformerImpl<T, Z extends List<T>, E extends JsonValue> implements
+    TypeTransformer<List<T>, JsonValue> {
 
   private final TypeTransformer<T, E> elementTransformer;
 
-  public ListTransformerImpl(TypeTransformer<T, E> transformer) {
+  public ListTransformerImpl(TypeTransformer<T, E> transformer)  {
     this.elementTransformer = transformer;
   }
 
-  @Override
+  @Override @SuppressWarnings("unchecked")
   public List<T> transform(JsonValue source) {
     if (source != null) {
       ValueType valueType = source.getValueType();
       switch (valueType){
         case NULL: return null;
         case ARRAY: {
-          return transformElements(((JsonArray) source).getValuesAs(JsonValue.class));
+          return transformElements(((JsonArray) source).getValuesAs(jsonValue -> (E) jsonValue));
         }
         default: throw new TransformingNotSupportedException(source, valueType);
       }
@@ -55,8 +57,11 @@ public class ListTransformerImpl<T, E extends JsonValue> implements TypeTransfor
     return null;
   }
 
-  private List<T> transformElements(List<JsonValue> list) {
-    return list.stream().map(element -> elementTransformer.transform((E) element))
-        .collect(Collectors.toList());
+  private List<T> transformElements(List<E> list) {
+    List<T> result = new ArrayList<>(list.size());
+    for (E jsonValue : list) {
+      result.add(elementTransformer.transform(jsonValue));
+    }
+    return result;
   }
 }

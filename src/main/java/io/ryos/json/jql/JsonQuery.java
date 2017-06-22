@@ -22,7 +22,6 @@ import io.ryos.json.jql.impl.JsonQueryImpl;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
 import io.ryos.json.jql.transformers.StringTransformerImpl;
 import java.util.List;
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
@@ -43,14 +42,9 @@ public interface JsonQuery {
         return new StringTransformerImpl();
     }
 
-    static <T> ListTransformerImpl<List<T>, JsonValue> asListExp(TypeTransformer<List<T>,
-        JsonValue>
+    static <T, Z extends List<T>, E extends JsonValue> ListTransformerImpl<T, Z, E> asList(TypeTransformer<T,
+        E>
         transformer) {
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T, E extends JsonValue> ListTransformerImpl asList(TypeTransformer<T, E> transformer) {
-        return new ListTransformerImpl(transformer);
+        return new ListTransformerImpl<>(transformer);
     }
 }

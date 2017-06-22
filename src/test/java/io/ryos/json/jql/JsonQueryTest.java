@@ -17,7 +17,6 @@
 package io.ryos.json.jql;
 
 import static io.ryos.json.jql.JsonQuery.asList;
-import static io.ryos.json.jql.JsonQuery.asListExp;
 import static io.ryos.json.jql.JsonQuery.ofString;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,11 +24,9 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import io.ryos.json.jql.exceptions.InvaldQuerySyntaxException;
-import io.ryos.json.jql.transformers.ListTransformerImpl;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 import org.junit.Test;
 
 /**
@@ -85,11 +82,11 @@ public class JsonQueryTest {
     assertThat("nonmatching query must return null.",foo, nullValue());
   }
 
-  @Test @SuppressWarnings("unchecked")
+  @Test
   public void testReadList() {
     JsonObject jsonUit = Json.createObjectBuilder().add("foo", Json.createArrayBuilder().add("1")
         .add("2").build()).build();
-    List<String> fooList = (List<String>) JsonQuery.of(jsonUit).query(".foo", asList(ofString()));
+    List<String> fooList = JsonQuery.of(jsonUit).query(".foo", asList(ofString()));
     assertThat("list must not be null.",fooList, notNullValue());
     assertThat("list contains 2 items", fooList.size(), equalTo(2));
   }
