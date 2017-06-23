@@ -23,9 +23,9 @@ package io.ryos.json.jql.exceptions;
  *
  * @author Erhan Bagdemir
  */
-public class InvaldQuerySyntaxException extends RuntimeException {
+public class InvalidQuerySyntaxException extends RuntimeException {
 
-  public InvaldQuerySyntaxException(String msg) {
+  public InvalidQuerySyntaxException(String msg) {
     super(msg);
   }
 }

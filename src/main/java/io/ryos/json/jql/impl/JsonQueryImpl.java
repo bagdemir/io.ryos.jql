@@ -21,7 +21,7 @@ package io.ryos.json.jql.impl;
 import io.ryos.json.jql.JQL;
 import io.ryos.json.jql.JsonQuery;
 import io.ryos.json.jql.TypeTransformer;
-import io.ryos.json.jql.exceptions.InvaldQuerySyntaxException;
+import io.ryos.json.jql.exceptions.InvalidQuerySyntaxException;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
 import java.util.List;
 import java.util.Objects;
@@ -99,7 +99,7 @@ public class JsonQueryImpl implements JsonQuery {
       }
     }
     if (!valid) {
-      throw new InvaldQuerySyntaxException("Invalid query: '" + query + "'");
+      throw new InvalidQuerySyntaxException("Invalid query: '" + query + "'");
     }
   }
 }
