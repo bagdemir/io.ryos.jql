@@ -23,6 +23,6 @@ package io.ryos.json.jql;
  *
  * @author Erhan Bagdemir
  */
-public interface JQL {
+public class JQL {
   String PATH_SEPERATOR = "\\.";
 }
