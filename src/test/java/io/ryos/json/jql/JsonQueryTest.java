@@ -60,16 +60,15 @@ public class JsonQueryTest {
 
   @Test(expected = InvaldQuerySyntaxException.class)
   public void testReadStringValueWithBlankQuery() {
-    JsonObject jsonUit = Json.createObjectBuilder().add("foo", "foo value").build();
-    JsonQuery jsonQuery = JsonQuery.of(jsonUit);
-    String foo = jsonQuery.query("", ofString());
+    JsonQuery jsonQuery = JsonQuery.of(Json.createObjectBuilder().build());
+    jsonQuery.query("", ofString());
   }
 
   @Test
   public void testReadStringWithNonMatchingQuery() {
     JsonObject jsonUit = Json.createObjectBuilder().add(".foo", "foo value").build();
     JsonQuery jsonQuery = JsonQuery.of(jsonUit);
-    String foo = jsonQuery.query("nonmatching", ofString());
+    String foo = jsonQuery.query(".nonmatching", ofString());
     assertThat("nonmatching query must return null.",foo, nullValue());
   }
 
@@ -78,7 +77,7 @@ public class JsonQueryTest {
     JsonObject jsonUit = Json.createObjectBuilder().add("foo", Json.createObjectBuilder().add
         ("bar", "bar value").build()).build();
     JsonQuery jsonQuery = JsonQuery.of(jsonUit);
-    String foo = jsonQuery.query(".foo/nonmatching", ofString());
+    String foo = jsonQuery.query(".foo.nonmatching", ofString());
     assertThat("nonmatching query must return null.",foo, nullValue());
   }
 
@@ -92,11 +91,41 @@ public class JsonQueryTest {
   }
 
   @Test
-  public void testReadListByExpression() {
+  public void testReadListByIndex() {
     JsonObject jsonUit = Json.createObjectBuilder().add("foo", Json.createArrayBuilder().add("1")
         .add("2").build()).build();
-    List<String> fooList = JsonQuery.of(jsonUit).query(".foo[]", asList(ofString()));
-    assertThat("list must not be null.",fooList, notNullValue());
-    assertThat("list contains 2 items", fooList.size(), equalTo(2));
+    String firstItem = JsonQuery.of(jsonUit).query(".foo[0]", ofString());
+    assertThat("list must not be null.",firstItem, notNullValue());
+    assertThat("The first item must be '1'", firstItem, equalTo("1"));
+  }
+
+  @Test(expected = InvaldQuerySyntaxException.class)
+  public void testInvalidQuery1() {
+    JsonQuery.of(Json.createObjectBuilder().build()).query(".]", asList(ofString()));
+  }
+
+  @Test(expected = InvaldQuerySyntaxException.class)
+  public void testInvalidQuery2() {
+      JsonQuery.of(Json.createObjectBuilder().build()).query(".foo]", asList(ofString()));
+  }
+
+  @Test(expected = InvaldQuerySyntaxException.class)
+  public void testInvalidQuery3() {
+    JsonQuery.of(Json.createObjectBuilder().build()).query(".foo]", asList(ofString()));
+  }
+
+  @Test(expected = InvaldQuerySyntaxException.class)
+  public void testInvalidQuery4() {
+    JsonQuery.of(Json.createObjectBuilder().build()).query(".[", asList(ofString()));
+  }
+
+  @Test
+  public void testValidDotQuery() {
+    JsonQuery.of(Json.createObjectBuilder().build()).query(".", asList(ofString()));
+  }
+
+  @Test
+  public void testValidDotArrayQuery() {
+    JsonQuery.of(Json.createObjectBuilder().build()).query(".[]", asList(ofString()));
   }
 }

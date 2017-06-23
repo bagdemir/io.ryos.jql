@@ -23,7 +23,10 @@ import io.ryos.json.jql.JsonQuery;
 import io.ryos.json.jql.TypeTransformer;
 import io.ryos.json.jql.exceptions.InvaldQuerySyntaxException;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
+import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
@@ -52,16 +55,20 @@ public class JsonQueryImpl implements JsonQuery {
       if (segments[0].startsWith(".")) {
         segments[0] = segments[0].substring(1);
       }
-
       JsonObject current = jsonObject;
       for (int i = 0; i < segments.length; i++) {
         // Last item should be considered as value.
         if (i == segments.length - 1) {
-          if (segments[i].endsWith("[]")) {
-            segments[i] = segments[i].substring(0, segments[i].length() - 2);
+          String c_segment = segments[i];
+          if (isListQuery(c_segment)) {
             if (!transformer.getClass().isAssignableFrom(ListTransformerImpl.class)) {
               throw new RuntimeException("");
             }
+          } else if (c_segment.endsWith("]")) {
+            String index = c_segment.substring(c_segment.lastIndexOf("[")+1, c_segment.length()-1);
+            String listQuery = c_segment.substring(0, c_segment.lastIndexOf("["));
+            List<T> query = query("."+listQuery, JsonQuery.asList(transformer));
+            return query.get(Integer.valueOf(index));
           }
           return transformer.transform((E) current.get(segments[i]));
         }
@@ -77,9 +84,22 @@ public class JsonQueryImpl implements JsonQuery {
     return null;
   }
 
+  private boolean isListQuery(String segment) {
+    return segment.endsWith("[]");
+  }
+
   private void checkSyntax(String query) {
-    if (query == null || "".equals(query)) {
-      throw new InvaldQuerySyntaxException("Invalid query: " + query);
+    boolean valid = false;
+    if (query != null) {
+      Pattern p = Pattern.compile(
+          "^(\\.)|(\\.((\\w+?(\\[\\d?\\])?)|(\".+\")))+|(\\.(((\\[\\d?\\])?)|(\".+\")))+$");
+      Matcher m = p.matcher(query);
+      if (m.matches()) {
+        valid = true;
+      }
+    }
+    if (!valid) {
+      throw new InvaldQuerySyntaxException("Invalid query: '" + query + "'");
     }
   }
 }
