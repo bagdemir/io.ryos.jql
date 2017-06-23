@@ -24,5 +24,5 @@ package io.ryos.json.jql;
  * @author Erhan Bagdemir
  */
 public class JQL {
-  String PATH_SEPERATOR = "\\.";
+  public static final String PATH_SEPERATOR = "\\.";
 }
