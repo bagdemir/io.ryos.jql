@@ -26,10 +26,11 @@ package io.ryos.json.jql.exceptions;
  */
 public class TransformingNotSupportedException extends RuntimeException{
 
-  public static final String FORMAT = "There is no transformer found for source type %s into target: %s";
+  private static final String MSG_TEMPLATE = "There is no transformer found for source type %s into "
+      + "target: %s";
 
   public TransformingNotSupportedException(Object source, Object target) {
-    super(String.format(FORMAT,
+    super(String.format(MSG_TEMPLATE,
         source, target));
   }
 }
