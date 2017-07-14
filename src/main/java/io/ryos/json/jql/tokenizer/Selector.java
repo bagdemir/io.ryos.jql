@@ -18,23 +18,22 @@
  */
 package io.ryos.json.jql.tokenizer;
 
-import org.junit.Test;
-
-import javax.json.Json;
 import javax.json.JsonObject;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
 /**
- * Unit tests for reference operator.
+ * Json query is to query a JSON object by using JSON query syntax.
+ *
+ * @author Bagdemir
+ * @version 1.0
  */
-public class ReferenceOperatorTest {
+public interface Selector<T extends JsonObject> {
 
-  @Test
-  public void testReferenceOp() throws Exception {
-    JsonObject build = Json.createObjectBuilder().add("foo", "val").build();
-    JsonObject eval = new ReferenceOperator<>().eval(build);
-    assertThat(eval, equalTo(build));
-  }
+  /**
+   * Evaluates the expression on the input provided.
+   * @param input JSON instance on which the expression will be evaluated.
+   * @return The resulting JSON object.
+   */
+  T eval(T input);
+
+  String getSelection();
 }

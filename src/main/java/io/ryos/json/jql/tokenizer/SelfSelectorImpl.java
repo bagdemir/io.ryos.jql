@@ -26,11 +26,18 @@ import java.util.Objects;
  * @author Bagdemir
  * @version 1.0
  */
-public class ReferenceOperator<T extends JsonObject> implements Expression<T> {
+public class SelfSelectorImpl<T extends JsonObject> implements Selector<T> {
+
+  private final String selection = ".";
 
   @Override
   public T eval(T input) {
     Objects.requireNonNull(input, "Input must not be null.");
     return input;
+  }
+
+  @Override
+  public String getSelection() {
+    return selection;
   }
 }
