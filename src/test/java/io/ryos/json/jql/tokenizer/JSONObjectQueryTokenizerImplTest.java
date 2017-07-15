@@ -1,23 +1,22 @@
 package io.ryos.json.jql.tokenizer;
 
-import org.junit.Test;
-
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import java.util.List;
+import org.junit.Test;
+
 /**
  * Created by Void on 14.07.2017.
  */
-public class JQLTokenizerImplTest {
+public class JSONObjectQueryTokenizerImplTest {
 
     @Test
     public void testDotQuery() {
         String dotQuery = ".";
-        List<Selector> selectors = new JQLTokenizerImpl().read(dotQuery);
+        List<Selector> selectors = new JSONObjectQueryTokenizerImpl().read(dotQuery);
         assertThat("selectors must not be null.", selectors, notNullValue());
         assertThat("selectors size must be one.", selectors.size(), equalTo(1));
     }
@@ -25,7 +24,7 @@ public class JQLTokenizerImplTest {
     @Test
     public void testSingleObjectQuery() {
         String dotQuery = ".foo";
-        List<Selector> selectors = new JQLTokenizerImpl().read(dotQuery);
+        List<Selector> selectors = new JSONObjectQueryTokenizerImpl().read(dotQuery);
         assertThat("selectors must not be null.", selectors, notNullValue());
         assertThat("selectors size must be one.", selectors.size(), equalTo(2));
         final Selector dotSelector = selectors.get(0);
@@ -38,7 +37,7 @@ public class JQLTokenizerImplTest {
     @Test
     public void testNestedObjectQuery() {
         String dotQuery = ".foo.bar";
-        List<Selector> selectors = new JQLTokenizerImpl().read(dotQuery);
+        List<Selector> selectors = new JSONObjectQueryTokenizerImpl().read(dotQuery);
         assertThat("selectors must not be null.", selectors, notNullValue());
         assertThat("selectors size must be one.", selectors.size(), equalTo(4));
         final Selector dotSelector1 = selectors.get(0);

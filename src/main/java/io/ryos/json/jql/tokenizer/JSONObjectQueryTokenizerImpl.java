@@ -4,9 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * JQLTokenizer.
+ * Implementation of the {@link JSONObjectQueryTokenizer}. It is basically a state machine to
+ * tokenize the query into tokens which will be transformed into {@link Selector} instances.
+ * @author Bagdemir
+ * @version 1.0
+ * @since 1.0
+ * @see {@link Selector}
  */
-public class JQLTokenizerImpl implements JQLTokenizer {
+public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
 
     private final LinkedList<Selector> selectors = new LinkedList<>();
     private State state = State.NOT_STARTED;
