@@ -1,5 +1,6 @@
 package io.ryos.json.jql.tokenizer;
 
+import io.ryos.json.jql.exceptions.InvalidObjectForArraySelectionException;
 import java.util.Optional;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -28,7 +29,6 @@ public class ArraySelectorImpl<T extends JsonValue, E extends JsonValue> impleme
     @Override
     @SuppressWarnings("unchecked")
     public T eval(E input) {
-
         JsonArray jsonArray;
         if (input instanceof JsonArray) {
             if (!selection.isEmpty()) {
@@ -38,12 +38,13 @@ public class ArraySelectorImpl<T extends JsonValue, E extends JsonValue> impleme
         } else {
             jsonArray = ((JsonObject) input).getJsonArray(selection);
         }
-
+        if (jsonArray == null) {
+            throw new InvalidObjectForArraySelectionException();
+        }
         JsonValue jsonValue = jsonArray;
         if (index.isPresent()) {
             jsonValue = jsonArray.get(index.get());
         }
-
         switch (jsonValue.getValueType()) {
             case STRING:
                 return (T) jsonValue;

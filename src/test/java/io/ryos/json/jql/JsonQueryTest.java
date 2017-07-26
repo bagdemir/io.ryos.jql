@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import io.ryos.json.jql.exceptions.InvalidObjectForArraySelectionException;
 import io.ryos.json.jql.exceptions.InvalidQuerySyntaxException;
 import java.util.List;
 import javax.json.Json;
@@ -132,5 +133,11 @@ public class JsonQueryTest {
     assertThat(query, notNullValue());
     assertThat(query.size(), equalTo(1));
     assertThat(query.get(0), equalTo("1"));
+  }
+
+  @Test(expected = InvalidObjectForArraySelectionException.class)
+  public void testInvalidDotArrayOnJsonObjectQuery() {
+    JsonQuery.of(Json.createObjectBuilder().add("key", "val").build())
+        .query(".[]", asList(ofString()));
   }
 }
