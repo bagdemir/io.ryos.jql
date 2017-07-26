@@ -1,9 +1,15 @@
 package io.ryos.json.jql.tokenizer;
 
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 /**
- * Created by Void on 15.07.2017.
+ * {@link ObjectSelectorImpl} is a selector to query a {@link JsonObject} by key.
+ *
+ * @author Bagdemir
+ * @version 1.0
+ * @since 1.0
+ * @see Selector
  */
 public class ObjectSelectorImpl<T extends JsonObject> implements Selector<T> {
 
@@ -14,8 +20,8 @@ public class ObjectSelectorImpl<T extends JsonObject> implements Selector<T> {
     }
 
     @Override
-    public T eval(T input) {
-        return null;
+    public JsonValue eval(T input) {
+        return input.get(selection);
     }
 
     public String getSelection() {

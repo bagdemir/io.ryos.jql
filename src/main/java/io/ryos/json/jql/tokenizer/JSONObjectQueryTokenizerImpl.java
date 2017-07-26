@@ -19,7 +19,6 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
 
     @Override
     public List<Selector> read(String query) {
-
         if (query != null && !query.isEmpty()) {
             char[] queryChars = query.toCharArray();
             for (final char current : queryChars) {

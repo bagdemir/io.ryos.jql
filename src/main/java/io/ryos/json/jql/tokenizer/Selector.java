@@ -19,6 +19,7 @@
 package io.ryos.json.jql.tokenizer;
 
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 /**
  * Json query is to query a JSON object by using JSON query syntax.
@@ -33,7 +34,7 @@ public interface Selector<T extends JsonObject> {
    * @param input JSON instance on which the expression will be evaluated.
    * @return The resulting JSON object.
    */
-  T eval(T input);
+  JsonValue eval(T input);
 
   String getSelection();
 }
