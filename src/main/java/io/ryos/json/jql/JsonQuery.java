@@ -19,6 +19,7 @@
 package io.ryos.json.jql;
 
 import io.ryos.json.jql.impl.JsonQueryImpl;
+import io.ryos.json.jql.transformers.JsonObjectTransformerImpl;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
 import io.ryos.json.jql.transformers.StringTransformerImpl;
 import java.util.List;
@@ -32,8 +33,6 @@ import javax.json.JsonValue;
  * @version 1.0
  */
 public interface JsonQuery {
-    <T, E extends JsonValue> T query(String jql, TypeTransformer<T, E> clazz);
-
     static JsonQuery of(JsonObject obj) {
         return new JsonQueryImpl(obj);
     }
@@ -42,9 +41,15 @@ public interface JsonQuery {
         return new StringTransformerImpl();
     }
 
+  static JsonObjectTransformerImpl ofJsonObject() {
+    return new JsonObjectTransformerImpl();
+  }
+
     static <T, Z extends List<T>, E extends JsonValue> ListTransformerImpl<T, Z, E> asList(TypeTransformer<T,
         E>
         transformer) {
         return new ListTransformerImpl<>(transformer);
     }
+
+  <T, E extends JsonValue> T query(String jql, TypeTransformer<T, E> clazz);
 }

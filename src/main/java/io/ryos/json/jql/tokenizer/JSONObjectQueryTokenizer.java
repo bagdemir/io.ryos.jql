@@ -13,6 +13,15 @@ import java.util.List;
 public interface JSONObjectQueryTokenizer {
 
   /**
+   * Static factory to create new instances of {@link JSONObjectQueryTokenizer}.
+   *
+   * @return New instances of {@link JSONObjectQueryTokenizer}.
+   */
+  static JSONObjectQueryTokenizer newInstance() {
+    return new JSONObjectQueryTokenizerImpl();
+  }
+
+  /**
    * Reads the query and tokenize it into {@link Selector} instances.
    *
    * @return A {@link List} of {@link Selector} instances.

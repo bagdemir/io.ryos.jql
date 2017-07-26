@@ -18,19 +18,20 @@
  */
 package io.ryos.json.jql.impl;
 
-import io.ryos.json.jql.JQL;
 import io.ryos.json.jql.JsonQuery;
 import io.ryos.json.jql.TypeTransformer;
 import io.ryos.json.jql.exceptions.InvalidQuerySyntaxException;
 import io.ryos.json.jql.exceptions.InvalidTransformerException;
+import io.ryos.json.jql.tokenizer.JSONObjectQueryTokenizer;
+import io.ryos.json.jql.tokenizer.Selector;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
-
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 
 /**
  * Json query implementation.
@@ -57,37 +58,15 @@ public class JsonQueryImpl implements JsonQuery {
     Objects.requireNonNull(transformer, "Transformer must not be null.");
 
     checkSyntax(jql);
-    final String[] segments = jql.substring(1).split(JQL.PATH_SEPERATOR);
 
-    if (segments.length > 0) {
-      if (segments[0].startsWith(PATH_PTR)) {
-        segments[0] = segments[0].substring(1);
+    List<Selector> selectors = JSONObjectQueryTokenizer.newInstance().read(jql);
+    JsonValue eval = jsonObject;
+    for (final Selector selector : selectors) {
+      if (eval instanceof JsonString) {
       }
-      JsonObject current = jsonObject;
-      for (int i = 0; i < segments.length; i++) {
-        // Last item should be considered as value.
-        if (i == segments.length - 1) {
-          final String c_segment = segments[i];
-          if (isListQuery(c_segment)) {
-            verifyListTransformer(transformer);
-          } else if (c_segment.endsWith("]")) {
-            String index = c_segment.substring(c_segment.lastIndexOf("[") + 1, c_segment.length() - 1);
-            String listQuery = c_segment.substring(0, c_segment.lastIndexOf("["));
-            List<T> query = query(PATH_PTR + listQuery, JsonQuery.asList(transformer));
-            return query.get(Integer.valueOf(index));
-          }
-          return transformer.transform((E) current.get(segments[i]));
-        }
-        JsonObject nextJsonObj = current.getJsonObject(segments[i]);
-        if (nextJsonObj != null) {
-          current = nextJsonObj;
-        } else {
-          // intermediate path segment can not be found.
-          return null;
-        }
-      }
+      eval = selector.eval((JsonObject) eval);
     }
-    return null;
+    return transformer.transform((E) eval);
   }
 
   private <T, E extends JsonValue> void verifyListTransformer(TypeTransformer<T, E> transformer) {

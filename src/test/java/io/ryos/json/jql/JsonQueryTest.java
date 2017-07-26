@@ -17,6 +17,7 @@
 package io.ryos.json.jql;
 
 import static io.ryos.json.jql.JsonQuery.asList;
+import static io.ryos.json.jql.JsonQuery.ofJsonObject;
 import static io.ryos.json.jql.JsonQuery.ofString;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -120,8 +121,8 @@ public class JsonQueryTest {
   }
 
   @Test
-  public void testValidDotQuery() {
-    JsonQuery.of(Json.createObjectBuilder().build()).query(".", asList(ofString()));
+  public void testValidSelfSelectorQuery() {
+    JsonQuery.of(Json.createObjectBuilder().build()).query(".", ofJsonObject());
   }
 
   @Test
