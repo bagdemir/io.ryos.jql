@@ -127,6 +127,10 @@ public class JsonQueryTest {
 
   @Test
   public void testValidDotArrayQuery() {
-    JsonQuery.of(Json.createObjectBuilder().build()).query(".[]", asList(ofString()));
+    List<String> query = JsonQuery.of(Json.createArrayBuilder().add("1").build())
+        .query(".[]", asList(ofString()));
+    assertThat(query, notNullValue());
+    assertThat(query.size(), equalTo(1));
+    assertThat(query.get(0), equalTo("1"));
   }
 }

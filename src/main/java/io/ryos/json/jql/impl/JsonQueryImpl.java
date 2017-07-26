@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.json.JsonObject;
-import javax.json.JsonString;
 import javax.json.JsonValue;
 
 /**
@@ -45,9 +43,9 @@ public class JsonQueryImpl implements JsonQuery {
   /**
    * JSON object to query.
    */
-  final JsonObject jsonObject;
+  final JsonValue jsonObject;
 
-  public JsonQueryImpl(final JsonObject jsonObject) {
+  public JsonQueryImpl(final JsonValue jsonObject) {
     Objects.requireNonNull(jsonObject, "Json object must not be null.");
     this.jsonObject = jsonObject;
   }
@@ -62,9 +60,7 @@ public class JsonQueryImpl implements JsonQuery {
     List<Selector> selectors = JSONObjectQueryTokenizer.newInstance().read(jql);
     JsonValue eval = jsonObject;
     for (final Selector selector : selectors) {
-      if (eval instanceof JsonString) {
-      }
-      eval = selector.eval((JsonObject) eval);
+      eval = selector.eval(eval);
     }
     return transformer.transform((E) eval);
   }

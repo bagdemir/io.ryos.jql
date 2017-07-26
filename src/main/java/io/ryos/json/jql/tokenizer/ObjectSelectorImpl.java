@@ -11,7 +11,8 @@ import javax.json.JsonValue;
  * @since 1.0
  * @see Selector
  */
-public class ObjectSelectorImpl<T extends JsonObject> implements Selector<T> {
+public class ObjectSelectorImpl<T extends JsonValue, E extends JsonObject> implements
+    Selector<T, E> {
 
     final String selection;
 
@@ -20,8 +21,8 @@ public class ObjectSelectorImpl<T extends JsonObject> implements Selector<T> {
     }
 
     @Override
-    public JsonValue eval(T input) {
-        return input.get(selection);
+    public T eval(E input) {
+        return (T) input.get(selection);
     }
 
     public String getSelection() {

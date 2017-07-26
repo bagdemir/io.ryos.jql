@@ -18,22 +18,22 @@
  */
 package io.ryos.json.jql.tokenizer;
 
-import javax.json.JsonObject;
 import java.util.Objects;
+import javax.json.JsonValue;
 
 /**
  * Reference operator which selects the root object of the input which is the input itself.
  * @author Bagdemir
  * @version 1.0
  */
-public class SelfSelectorImpl<T extends JsonObject> implements Selector<T> {
+public class SelfSelectorImpl<T extends JsonValue, E extends JsonValue> implements Selector<T, E> {
 
   private final String selection = ".";
 
   @Override
-  public T eval(T input) {
+  public T eval(E input) {
     Objects.requireNonNull(input, "Input must not be null.");
-    return input;
+    return (T) input;
   }
 
   @Override

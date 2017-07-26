@@ -18,7 +18,6 @@
  */
 package io.ryos.json.jql.tokenizer;
 
-import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 /**
@@ -27,14 +26,14 @@ import javax.json.JsonValue;
  * @author Bagdemir
  * @version 1.0
  */
-public interface Selector<T extends JsonObject> {
+public interface Selector<T extends JsonValue, E extends JsonValue> {
 
   /**
    * Evaluates the expression on the input provided.
    * @param input JSON instance on which the expression will be evaluated.
    * @return The resulting JSON object.
    */
-  JsonValue eval(T input);
+  T eval(E input);
 
   String getSelection();
 }

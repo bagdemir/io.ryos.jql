@@ -48,7 +48,11 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
     private void handleOtherwise(char c) {
         if (state == State.OBJ_SELECTION_STARTED) {
             state = State.OBJ_SELECTION_READING;
-        } else if (state != State.OBJ_SELECTION_READING) throw new UnexpectedTokenException();
+        } else if (state == State.ARR_SELECTION_STARTED) {
+            state = State.ARR_SELECTION_READING;
+        } else if (state != State.OBJ_SELECTION_READING && state != State.ARR_SELECTION_READING) {
+            throw new UnexpectedTokenException();
+        }
         buffer.append(c);
     }
 
@@ -70,6 +74,7 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
             case ARR_SELECTION_STARTED:
             case ARR_SELECTION_READING:
                 state = State.ARR_SELECTION_ENDED;
+                buffer.append(']');
                 selectors.add(new ArraySelectorImpl<>(buffer.toString()));
                 flushBuffer();
                 break;
@@ -95,6 +100,7 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
             default:
                 throw new UnexpectedTokenException();
         }
+        buffer.append('[');
     }
 
     private void handleDot() {
@@ -125,10 +131,7 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
             case OBJ_SELECTION_ENDED_E:
                 selectors.add(new ObjectSelectorImpl<>(buffer.toString()));
                 break;
-            case ARR_SELECTION_STARTED:
-            case ARR_SELECTION_READING:
-                selectors.add(new ArraySelectorImpl<>(buffer.toString()));
-                break;
+            case ARR_SELECTION_ENDED:
             case OBJ_SELECTION_READING_E:
                 break;
             default:

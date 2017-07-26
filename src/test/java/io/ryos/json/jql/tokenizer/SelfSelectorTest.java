@@ -18,13 +18,12 @@
  */
 package io.ryos.json.jql.tokenizer;
 
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 /**
  * Unit tests for reference operator.
@@ -34,7 +33,7 @@ public class SelfSelectorTest {
   @Test
   public void testReferenceOp() throws Exception {
     JsonObject build = Json.createObjectBuilder().add("foo", "val").build();
-    JsonObject eval = new SelfSelectorImpl<>().eval(build);
+    JsonObject eval = (JsonObject) new SelfSelectorImpl<>().eval(build);
     assertThat(eval, equalTo(build));
   }
 }

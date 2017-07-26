@@ -23,6 +23,7 @@ import io.ryos.json.jql.transformers.JsonObjectTransformerImpl;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
 import io.ryos.json.jql.transformers.StringTransformerImpl;
 import java.util.List;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
@@ -37,6 +38,9 @@ public interface JsonQuery {
         return new JsonQueryImpl(obj);
     }
 
+  static JsonQuery of(JsonArray obj) {
+    return new JsonQueryImpl(obj);
+  }
     static StringTransformerImpl ofString() {
         return new StringTransformerImpl();
     }
