@@ -50,7 +50,10 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
             state = State.OBJ_SELECTION_READING;
         } else if (state == State.ARR_SELECTION_STARTED) {
             state = State.ARR_SELECTION_READING;
-        } else if (state != State.OBJ_SELECTION_READING && state != State.ARR_SELECTION_READING) {
+        } else if (state == State.OBJ_SELECTION_STARTED_E) {
+          state = State.OBJ_SELECTION_READING_E;
+        } else if (state != State.OBJ_SELECTION_READING && state != State.ARR_SELECTION_READING
+            && state != State.OBJ_SELECTION_READING_E) {
             throw new UnexpectedTokenException();
         }
         buffer.append(c);
