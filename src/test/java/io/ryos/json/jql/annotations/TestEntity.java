@@ -5,7 +5,7 @@ package io.ryos.json.jql.annotations;
  *
  * @author Erhan Bagdemir
  */
-public class AnnotatedEntity {
+public class TestEntity {
 
   @Jql(expression = ".foo")
   public String foo;
