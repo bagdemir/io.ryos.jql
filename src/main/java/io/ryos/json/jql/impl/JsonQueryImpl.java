@@ -36,7 +36,6 @@ import javax.json.JsonValue;
  */
 public class JsonQueryImpl implements JsonQuery {
 
-  private static final String PATH_PTR = ".";
   /**
    * JSON object to query.
    */
