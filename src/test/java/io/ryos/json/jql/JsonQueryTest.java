@@ -26,7 +26,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import io.ryos.json.jql.exceptions.InvalidObjectForArraySelectionException;
-import io.ryos.json.jql.exceptions.InvalidQuerySyntaxException;
+import io.ryos.json.jql.exceptions.TransformingNotSupportedException;
+import io.ryos.json.jql.tokenizer.JSONObjectQueryTokenizerImpl.UnexpectedTokenException;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -61,7 +62,7 @@ public class JsonQueryTest {
     jsonQuery.query(null, null);
   }
 
-  @Test(expected = InvalidQuerySyntaxException.class)
+  @Test(expected = TransformingNotSupportedException.class)
   public void testReadStringValueWithBlankQuery() {
     JsonQuery jsonQuery = JsonQuery.of(Json.createObjectBuilder().build());
     jsonQuery.query("", ofString());
@@ -102,22 +103,22 @@ public class JsonQueryTest {
     assertThat("The first item must be '1'", firstItem, equalTo("1"));
   }
 
-  @Test(expected = InvalidQuerySyntaxException.class)
+  @Test(expected = UnexpectedTokenException.class)
   public void testInvalidQuery1() {
     JsonQuery.of(Json.createObjectBuilder().build()).query(".]", asList(ofString()));
   }
 
-  @Test(expected = InvalidQuerySyntaxException.class)
+  @Test(expected = UnexpectedTokenException.class)
   public void testInvalidQuery2() {
       JsonQuery.of(Json.createObjectBuilder().build()).query(".foo]", asList(ofString()));
   }
 
-  @Test(expected = InvalidQuerySyntaxException.class)
+  @Test(expected = UnexpectedTokenException.class)
   public void testInvalidQuery3() {
     JsonQuery.of(Json.createObjectBuilder().build()).query(".foo]", asList(ofString()));
   }
 
-  @Test(expected = InvalidQuerySyntaxException.class)
+  @Test(expected = UnexpectedTokenException.class)
   public void testInvalidQuery4() {
     JsonQuery.of(Json.createObjectBuilder().build()).query(".[", asList(ofString()));
   }
