@@ -20,15 +20,12 @@ package io.ryos.json.jql.impl;
 
 import io.ryos.json.jql.JsonQuery;
 import io.ryos.json.jql.TypeTransformer;
-import io.ryos.json.jql.exceptions.InvalidQuerySyntaxException;
 import io.ryos.json.jql.exceptions.InvalidTransformerException;
 import io.ryos.json.jql.tokenizer.JSONObjectQueryTokenizer;
 import io.ryos.json.jql.tokenizer.Selector;
 import io.ryos.json.jql.transformers.ListTransformerImpl;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.json.JsonValue;
 
 /**
@@ -54,9 +51,6 @@ public class JsonQueryImpl implements JsonQuery {
   public <T, E extends JsonValue> T query(String jql, TypeTransformer<T, E> transformer) {
     Objects.requireNonNull(jql, "JSON query must not be null.");
     Objects.requireNonNull(transformer, "Transformer must not be null.");
-
-    checkSyntax(jql);
-
     List<Selector> selectors = JSONObjectQueryTokenizer.newInstance().read(jql);
     JsonValue eval = jsonObject;
     for (final Selector selector : selectors) {
@@ -70,25 +64,6 @@ public class JsonQueryImpl implements JsonQuery {
       throw new InvalidTransformerException(String.format("Invalid transformer: %s provided for expected: %s",
               transformer.getClass(),
               ListTransformerImpl.class));
-    }
-  }
-
-  private boolean isListQuery(String segment) {
-    return segment.endsWith("[]");
-  }
-
-  private void checkSyntax(String query) {
-    boolean valid = false;
-    if (query != null) {
-      Pattern p = Pattern.compile(
-              "^(\\.)|(\\.((\\w+?(\\[\\d?\\])?)|(\".+\")))+|(\\.(((\\[\\d?\\])?)|(\".+\")))+$");
-      Matcher m = p.matcher(query);
-      if (m.matches()) {
-        valid = true;
-      }
-    }
-    if (!valid) {
-      throw new InvalidQuerySyntaxException("Invalid query: '" + query + "'");
     }
   }
 }
