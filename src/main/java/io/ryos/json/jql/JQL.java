@@ -18,6 +18,11 @@
  */
 package io.ryos.json.jql;
 
+import io.ryos.json.jql.annotations.Jql;
+import java.lang.reflect.Field;
+import java.util.Objects;
+import javax.json.JsonObject;
+
 /**
  * This class does nothing unless you provide some docs.
  *
@@ -25,4 +30,33 @@ package io.ryos.json.jql;
  */
 public class JQL {
   public static final String PATH_SEPERATOR = "\\.";
+
+  /**
+   * Mapper method from {@link JsonObject} to classes of which type is provided.
+   *
+   * @param fromJson {@link JsonObject}.
+   * @param toEntity Target entity type.
+   * @param <T> Type of the entity.
+   * @return The entity which is created from the {@link JsonObject}.
+   */
+  static <T> T map(JsonObject fromJson, Class<T> toEntity)
+      throws IllegalAccessException, InstantiationException {
+    Objects.requireNonNull(fromJson, "Json must not be null.");
+    Objects.requireNonNull(toEntity, "Json must not be null.");
+
+    JsonQuery jsonQuery = JsonQuery.of(fromJson);
+    String s = fromJson.toString();
+    T targetEntity = toEntity.newInstance();
+    Field[] declaredFields = toEntity.getDeclaredFields();
+    for (final Field field : declaredFields) {
+      Class<?> type = field.getType();
+      Jql[] declaredAnnotationsByType = field.getDeclaredAnnotationsByType(Jql.class);
+      if (String.class.equals(type)) {
+        String queryResponse = jsonQuery
+            .query(declaredAnnotationsByType[0].expression(), JsonQuery.ofString());
+        field.set(targetEntity, queryResponse);
+      }
+    }
+    return targetEntity;
+  }
 }

@@ -159,6 +159,6 @@ public class JSONObjectQueryTokenizerImpl implements JSONObjectQueryTokenizer {
         ARR_SELECTION_ENDED
     }
 
-    private class UnexpectedTokenException extends RuntimeException {
+    public class UnexpectedTokenException extends RuntimeException {
     }
 }
